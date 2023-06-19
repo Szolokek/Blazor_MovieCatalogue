@@ -1,0 +1,46 @@
+﻿@using System.Diagnostics;
+@inject IMovieService MovieService
+@inject NavigationManager UriHelper
+
+<div style="width:100%;" class="rz-color-primary-light rz-background-color-black">
+    <RadzenMenu Click="OnParentClicked" class="rz-color-primary-light rz-background-color-black">
+        <div>
+            <RadzenButton Variant="Variant.Text" class="nav-link" Click="@NavigateHome" ButtonStyle="ButtonStyle.Light" Text="Home" Icon="home" />
+        </div>
+        <div class="col-md-6 col-lg-4 p-3">
+            <RadzenTextBox Placeholder="Search..." Change=@(args => OnChange(args, "TextBox with placeholder")) class="w-100" />
+        </div>
+        <div>
+            <RadzenButton Variant="Variant.Text" class="nav-link" Click="@Navigate" ButtonStyle="ButtonStyle.Light" Text="Search" Icon="search"/>
+        </div>
+        
+
+
+
+
+    </RadzenMenu>
+</div>
+
+@code {
+    string curr_search_string = "";
+    void OnParentClicked(MenuItemEventArgs args)
+    {
+
+    }
+
+    void OnChange(string value, string name)
+    {
+        curr_search_string = value;
+    }
+
+    void Navigate()
+    {
+        UriHelper.NavigateTo("/searchresults/"+curr_search_string);
+
+    }
+
+    void NavigateHome()
+    {
+        UriHelper.NavigateTo("/");
+    }
+}

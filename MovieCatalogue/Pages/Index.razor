@@ -1,0 +1,61 @@
+﻿@page "/"
+@using MovieCatalogue.Data.Search;
+@inject NavigationManager Navigation
+@inject IMovieService MovieService
+
+<PageTitle>Index</PageTitle>
+
+<h1>Trending this week</h1>
+
+@if (RP.results != null)
+{
+    <RadzenDataList WrapItems="true" AllowPaging="true"
+                Data="@RP.results" TItem="Movie" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+        <Template Context="movie">
+            <RadzenCard Style="width: 100%; padding: 0;">
+                <RadzenRow Gap="0">
+                    <RadzenColumn Size="12" SizeMD="4" SizeLG="2" Class="rz-p-4 product-title">
+                        <img src="@movie.imagesrc">
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeMD="6" SizeLG="8" Class="rz-p-4">
+                        <RadzenRow Gap="0">
+                            <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
+                                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0">@(movie.title)</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0">@(movie.name)</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body2">@(movie.media_type)</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Caption">@(movie.release_date)</RadzenText>
+                                </RadzenColumn>
+                                <RadzenColumn Size="12" SizeMD="6" SizeLG="8">
+                                    <RadzenText TextStyle="TextStyle.Body2">@(movie.overview)</RadzenText>
+                                </RadzenColumn>
+                            </RadzenRow>
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeLG="2" Class="rz-p-4">
+                            <RadzenButton Text="Show Page" Style="width: 100%" Click="() => Navigate(movie.id, movie.media_type)" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenCard>
+            </Template>
+        </RadzenDataList>
+}
+else
+{
+    <h3>Loading...</h3>
+}
+
+@code{
+    ResultPage RP = new ResultPage();
+
+    protected override async Task OnInitializedAsync()
+    {
+        RP = await MovieService.GetTrendingWeekAsync();
+
+    }
+
+    void Navigate(int id, string media_type)
+    {
+        if (media_type == "movie") Navigation.NavigateTo("/moviepage/" + id);
+        else if (media_type == "tv") Navigation.NavigateTo("/tvpage/" + id);
+        else if (media_type == "person") Navigation.NavigateTo("/personpage/" + id);
+    }
+}
